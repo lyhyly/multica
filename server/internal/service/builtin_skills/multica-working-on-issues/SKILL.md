@@ -130,8 +130,9 @@ list (see the reference-only rule above).
 ## Metadata: high-signal keys only
 
 Metadata is durable issue state. Reading metadata is safe. Writing a metadata key
-is a state mutation and should be tied to an explicit task requirement to record
-that state for later readers or runs.
+is a state mutation — pin one only when it is materially important to this issue
+AND a future run is likely to re-read it (the same bar as the runtime brief's
+`## Issue Metadata`); otherwise leave the bag alone.
 
 High-signal keys (reuse these names so queries stay consistent):
 
