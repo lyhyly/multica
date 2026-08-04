@@ -243,6 +243,12 @@ func TestWorkingOnIssuesSkillCoversIssueLoopContracts(t *testing.T) {
 		"`--stage <N>`",
 		"when a whole stage finishes",
 		"multica issue status <child-id> todo",
+		// MUL-5696: the metadata write bar must stay the brief's two-condition
+		// bar (writeIssueMetadata), not a stricter parallel one — the skill's
+		// old "explicit task requirement" wording forbade the brief's own
+		// recommended pattern of pinning pr_url unprompted.
+		"materially important to this issue",
+		"likely to re-read it",
 	}
 	for _, want := range mustContain {
 		if !strings.Contains(body, want) {
@@ -422,6 +428,19 @@ func TestSquadsSkillCoversLeaderRoutingContract(t *testing.T) {
 	for _, want := range mustContain {
 		if !strings.Contains(body, want) {
 			t.Errorf("squads skill missing %q", want)
+		}
+	}
+
+	// MUL-5696: no unbounded comment pull anywhere in the skill. #6347 fixed
+	// the quick start's `--recent 10` but missed a second unbounded
+	// `issue comment list` in the CLI section; both shapes contradict the
+	// brief's "two bounded reads, never one bulk pull" doctrine.
+	for _, banned := range []string{
+		"multica issue comment list <issue-id> --output json",
+		"--recent 10",
+	} {
+		if strings.Contains(body, banned) {
+			t.Errorf("squads skill carries the unbounded comment read %q (MUL-5696)", banned)
 		}
 	}
 
